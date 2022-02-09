@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Bootcamp from "../model/Bootcamp.js";
+import ErrorResponse from "../utils/errorResponse.js";
 
 // @desc      Get all bootcamps
 // @route     GET /api/v1/bootcamps
@@ -49,14 +50,14 @@ const updateBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is bootcamp owner
-  // if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
-  //   return next(
-  //     new ErrorResponse(
-  //       `User ${req.params.id} is not authorized to update this bootcamp`,
-  //       401
-  //     )
-  //   );
-  // }
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.params.id} is not authorized to update this bootcamp`,
+        401
+      )
+    );
+  }
 
   bootcamp = await Bootcamp.findOneAndUpdate(req.params.id, req.body, {
     new: true,
@@ -79,14 +80,14 @@ const deleteBootcamp = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is bootcamp owner
-  // if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
-  //   return next(
-  //     new ErrorResponse(
-  //       `User ${req.params.id} is not authorized to delete this bootcamp`,
-  //       401
-  //     )
-  //   );
-  // }
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.params.id} is not authorized to delete this bootcamp`,
+        401
+      )
+    );
+  }
 
   bootcamp.remove();
 
@@ -133,14 +134,14 @@ const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is bootcamp owner
-  // if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
-  //   return next(
-  //     new ErrorResponse(
-  //       `User ${req.params.id} is not authorized to delete this bootcamp`,
-  //       401
-  //     )
-  //   );
-  // }
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.params.id} is not authorized to delete this bootcamp`,
+        401
+      )
+    );
+  }
 
   await Bootcamp.findByIdAndUpdate(req.params.id, { photo: req.file.filename });
 

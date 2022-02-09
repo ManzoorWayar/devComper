@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Bootcamp from "../model/Bootcamp.js";
 import Course from "../model/Course.js";
+import ErrorResponse from "../utils/errorResponse.js";
 
 // @desc      Get courses
 // @route     GET /api/v1/courses
@@ -132,14 +133,14 @@ const deleteCourse = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is course owner
-  // if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
-  //   return next(
-  //     new ErrorResponse(
-  //       `User ${req.user.id} is not authorized to delete course ${course._id}`,
-  //       401
-  //     )
-  //   );
-  // }
+  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User ${req.user.id} is not authorized to delete course ${course._id}`,
+        401
+      )
+    );
+  }
 
   await course.remove();
 
